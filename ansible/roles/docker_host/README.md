@@ -1,6 +1,5 @@
-Role Name
-=========
-
+Role Name: docker_host
+----------------------
 Ansible role to setup docker host on ubuntu 16.04.
 
 Requirements
@@ -13,12 +12,10 @@ Role Variables
 
 Dependencies
 ------------
+None
 
 Example Playbook
 ----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
       become: true
       roles:
@@ -26,9 +23,8 @@ Including an example of how to use your role (for instance, with variables passe
 
 License
 -------
-
 BSD
 
 Author Information
 ------------------
- Kanwar
+Kanwar
