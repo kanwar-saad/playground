@@ -1,4 +1,0 @@
----
-# handlers file for docker_host
-- name: kill own ssh connections
-  meta: reset_connection
