@@ -1,0 +1,77 @@
+---
+# tasks file for installing docker_host on ubuntu
+- name: Get ubuntu version
+  shell: lsb_release -cs
+  register: ubuntu_version
+
+- name: Get ubuntu version
+  shell: echo "deb [arch={{ target_arch }}] https://download.docker.com/linux/ubuntu {{ ubuntu_version.stdout }} stable"
+  register: deb_cmd
+
+- name: apt-get update
+  apt:
+    update_cache: yes
+
+- name: remove current docker installation
+  apt:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-engine
+
+- name: install docker repository
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - curl
+
+- name: add docker gpg key to apt
+  apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+    state: present
+
+- name: add docker stable repository
+  apt_repository:
+    repo: "deb [arch={{ target_arch }}] https://download.docker.com/linux/ubuntu {{ ubuntu_version.stdout }} stable"
+    state: present
+
+- name: apt-get update
+  apt:
+    update_cache: yes
+
+- name: install docker
+  apt:
+    name: docker-ce
+    state: present
+
+- name: create docker user group
+  group:
+    name: docker
+    state: present
+
+- name: add current user to docker group
+  user:
+    name: "{{ lookup('env', 'USER') }}"
+    groups: docker
+    state: present
+    append: true
+
+- name: reset ssh connection to allow user changes to affect.
+  meta: reset_connection
+
+- name: verify docker command runs without sudo
+  shell: docker run hello-world | grep "Hello"
+
+- name : enable docker service to start on boot
+  service:
+    name: docker
+    enabled: yes
+    state: started
+
+
