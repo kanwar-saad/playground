@@ -1,0 +1,67 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: add google gpg key to apt
+      apt_key:
+        url: "https://dl-ssl.google.com/linux/linux_signing_key.pub"
+        state: present
+
+    - name: add google stable repository
+      apt_repository:
+        repo: "deb https://dl.google.com/linux/chrome/deb/ stable main"
+        state: present
+
+    - name: apt-get update
+      apt:
+        update_cache: yes
+
+    - name: install useability packages for user
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - vim
+        - google-chrome-stable
+        - build-essential
+        - gcc-4.8
+        - g++-4.8
+        - gcc-5
+        - g++-5
+        - python3.5
+        - python3.5-dev
+        - python3.5-doc
+        - python3.5-dbg
+        - python-pip
+        - python3-pip
+        - virtualenv
+        - wget
+        - curl
+        - apache2
+        - openssl
+        - libssl-dev
+        - openjdk-8-jre
+        - openjdk-8-jdk
+        - openssh-client
+        - openssh-server
+
+    - name: generate keys for user if not present
+      user:
+        name: "{{ lookup('env', 'USER') }}"
+        generate_ssh_key: yes
+        ssh_key_bits: 4096
+        ssh_key_file: .ssh/id_rsa
+
+    - name: Set authorized key for local ssh
+      authorized_key:
+        user: "{{ lookup('env', 'USER') }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+
+    - name : enable ssh service to start on boot
+      service:
+          name: ssh
+          enabled: yes
+          state: started

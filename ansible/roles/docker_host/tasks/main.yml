@@ -4,10 +4,6 @@
   shell: lsb_release -cs
   register: ubuntu_version
 
-- name: Get ubuntu version
-  shell: echo "deb [arch={{ target_arch }}] https://download.docker.com/linux/ubuntu {{ ubuntu_version.stdout }} stable"
-  register: deb_cmd
-
 - name: apt-get update
   apt:
     update_cache: yes
@@ -73,5 +69,3 @@
     name: docker
     enabled: yes
     state: started
-
-

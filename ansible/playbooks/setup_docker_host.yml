@@ -1,6 +1,6 @@
 ---
 - hosts: all
-#become: true
+  become: true
   roles:
     - { role: ../roles/docker_host, target_arch: "amd64" } 
-#- { role:../roles/docker_host, target_arch: "armhf" } 
+    #- { role:../roles/docker_host, target_arch: "armhf" } 
